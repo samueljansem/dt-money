@@ -1,10 +1,12 @@
-import Modal from "react-modal";
-import closeImg from "../../assets/close.svg";
-import incomeImg from "../../assets/income.svg";
-import outcomeImg from "../../assets/outcome.svg";
-import { Container, TransactionTypeContainer } from "./styles";
+import { FormEvent, useState } from 'react';
+import Modal from 'react-modal';
+import closeImg from '../../assets/close.svg';
+import incomeImg from '../../assets/income.svg';
+import outcomeImg from '../../assets/outcome.svg';
+import { api } from '../../services/api';
+import { Container, TransactionTypeContainer, RadioBox } from './styles';
 
-Modal.setAppElement("#root");
+Modal.setAppElement('#root');
 
 interface NewTransactionModalProps {
     isOpen: boolean;
@@ -15,41 +17,79 @@ export function NewTransactionModal({
     isOpen,
     onRequestClose,
 }: NewTransactionModalProps) {
+    const [type, setType] = useState('income');
+    const [title, setTitle] = useState('');
+    const [category, setCategory] = useState('');
+    const [amount, setAmount] = useState(0);
+
+    function handleCreateNewTransaction(e: FormEvent) {
+        e.preventDefault();
+
+        const data = { title, amount, category, type };
+
+        api.post('/transactions', data);
+    }
+
     return (
         <Modal
             isOpen={isOpen}
             onRequestClose={onRequestClose}
-            overlayClassName='react-modal-overlay'
-            className='react-modal-content'
+            overlayClassName="react-modal-overlay"
+            className="react-modal-content"
         >
             <button
-                type='button'
-                className='react-modal-close'
+                type="button"
+                className="react-modal-close"
                 onClick={onRequestClose}
             >
-                <img src={closeImg} alt='Fechar modal' />
+                <img src={closeImg} alt="Fechar modal" />
             </button>
-            <Container>
+
+            <Container onSubmit={handleCreateNewTransaction}>
                 <h2>Cadastrar transação</h2>
 
-                <input placeholder='Título' />
+                <input
+                    value={title}
+                    onChange={(event) => setTitle(event.target.value)}
+                    placeholder="Título"
+                />
 
-                <input type='number' placeholder='Valor' />
+                <input
+                    onChange={(event) => setAmount(Number(event.target.value))}
+                    value={amount}
+                    type="number"
+                    placeholder="Valor"
+                    min="0"
+                />
 
                 <TransactionTypeContainer>
-                    <button type='button'>
-                        <img src={incomeImg} alt='Entrada' />
+                    <RadioBox
+                        type="button"
+                        onClick={() => setType('income')}
+                        isActive={type === 'income'}
+                        activeColor="green"
+                    >
+                        <img src={incomeImg} alt="Entrada" />
                         <span>Entrada</span>
-                    </button>
-                    <button type='button'>
-                        <img src={outcomeImg} alt='Saída' />
+                    </RadioBox>
+                    <RadioBox
+                        type="button"
+                        onClick={() => setType('outcome')}
+                        isActive={type === 'outcome'}
+                        activeColor="red"
+                    >
+                        <img src={outcomeImg} alt="Saída" />
                         <span>Saída</span>
-                    </button>
+                    </RadioBox>
                 </TransactionTypeContainer>
 
-                <input placeholder='Categoria' />
+                <input
+                    onChange={(event) => setCategory(event.target.value)}
+                    value={category}
+                    placeholder="Categoria"
+                />
 
-                <button type='submit'>Cadastrar</button>
+                <button type="submit">Cadastrar</button>
             </Container>
         </Modal>
     );

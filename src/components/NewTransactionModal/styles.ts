@@ -1,5 +1,15 @@
-import styled from "styled-components";
-import { darken } from "polished";
+import styled from 'styled-components';
+import { darken, transparentize } from 'polished';
+
+interface RadioBoxProps {
+    isActive: boolean;
+    activeColor: 'green' | 'red';
+}
+
+const colors = {
+    green: '#33cc95',
+    red: '#e52e4d',
+};
 
 export const Container = styled.form`
     h2 {
@@ -26,7 +36,7 @@ export const Container = styled.form`
         }
     }
 
-    button[type="submit"] {
+    button[type='submit'] {
         width: 100%;
         padding: 0 1.5rem;
         height: 4rem;
@@ -50,34 +60,37 @@ export const TransactionTypeContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
+`;
 
-    button {
-        height: 4rem;
-        border: 1px solid #d7d7d7;
-        border-radius: 0.25rem;
+export const RadioBox = styled.button<RadioBoxProps>`
+    height: 4rem;
+    border: 1px solid #d7d7d7;
+    border-radius: 0.25rem;
 
-        background: transparent;
+    background: ${(props) =>
+        props.isActive
+            ? transparentize(0.9, colors[props.activeColor])
+            : 'transparent'};
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-        transition: border-color 0.2s;
+    transition: border-color 0.2s;
 
-        &:hover {
-            border-color: ${darken(0.1, "#d7d7d7")};
-        }
+    &:hover {
+        border-color: ${darken(0.1, '#d7d7d7')};
+    }
 
-        img {
-            width: 1.25rem;
-            height: 1.25rem;
-        }
+    img {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
 
-        span {
-            display: inline-block;
-            margin-left: 1rem;
-            font-size: 1rem;
-            color: var(--text-tile);
-        }
+    span {
+        display: inline-block;
+        margin-left: 1rem;
+        font-size: 1rem;
+        color: var(--text-tile);
     }
 `;
