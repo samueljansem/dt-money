@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Dashboard, Header, NewTransactionModal } from './components';
+import { TransactionsProvider } from './hooks/useTransactions';
 import { GlobalStyles } from './styles/global';
 
 export function App() {
@@ -15,14 +16,17 @@ export function App() {
     }
 
     return (
-        <>
+        <TransactionsProvider>
             <GlobalStyles />
+
             <Header onOpenNewTransactionModal={handleOpenNewTransactionModal} />
+
             <Dashboard />
+
             <NewTransactionModal
                 isOpen={isNewTransactionModalOpen}
                 onRequestClose={handleCloseNewTransactionModal}
             />
-        </>
+        </TransactionsProvider>
     );
 }
